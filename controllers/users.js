@@ -76,6 +76,9 @@ const updateUser = (req, res, next) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         return next(new NotFoundError('User not found'));
       }
+      if (err.code === 11000) {
+        return next(new ConflictError('Данный email уже занят'));
+      }
       if (err instanceof mongoose.Error.ValidationError) {
         return next(new ValidationError({
           message: `${Object.values(err.errors)

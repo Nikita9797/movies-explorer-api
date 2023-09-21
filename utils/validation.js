@@ -42,7 +42,7 @@ const moviePostValidation = celebrate({
 
 const validatorConfig = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().custom(validateId),
+    movieId: Joi.string().required().custom(validateId),
   }),
 });
 

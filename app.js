@@ -6,9 +6,9 @@ const router = require('./routes');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const handleError = require('./middlewares/handleError');
 const { limiter } = require('./middlewares/rateLimit');
-const { MONGODB_URL } = require('./utils/config');
+const { MONGODB_LINK } = require('./utils/config');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGODB_URL = MONGODB_LINK } = process.env;
 
 mongoose.connect(MONGODB_URL, {
   useNewUrlParser: true,

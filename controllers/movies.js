@@ -9,7 +9,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const createMovie = (req, res, next) => {
   const ownerId = req.user._id;
   return movieSchema.create({ ...req.body, owner: ownerId })
-    .then((card) => res.status(httpConstants.HTTP_STATUS_CREATED).send(card))
+    .then((movie) => res.status(httpConstants.HTTP_STATUS_CREATED).send(movie))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(new ValidationError({
@@ -22,14 +22,14 @@ const createMovie = (req, res, next) => {
     });
 };
 
-const getCards = (req, res, next) => {
+const getMovies = (req, res, next) => {
   const owner = req.user._id;
   movieSchema.find({ owner })
-    .then((cards) => {
-      if (cards.length) {
-        return res.status(httpConstants.HTTP_STATUS_OK).send(cards);
+    .then((movies) => {
+      if (movies.length) {
+        return res.status(httpConstants.HTTP_STATUS_OK).send(movies);
       }
-      return res.status(httpConstants.HTTP_STATUS_OK).send('Cохранённых фильмов не найдено');
+      return next(new NotFoundError('Cохранённых фильмов не найдено'));
     })
     .catch(() => next(new ServerError('Server Error')));
 };
@@ -49,7 +49,7 @@ const deleteMovieById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        return next(new NotFoundError('Card not found'));
+        return next(new NotFoundError('Фильм не найден'));
       }
       if (err instanceof mongoose.Error.CastError) {
         return next(new ValidationError('Incorrect data'));
@@ -60,6 +60,6 @@ const deleteMovieById = (req, res, next) => {
 
 module.exports = {
   createMovie,
-  getCards,
+  getMovies,
   deleteMovieById,
 };
