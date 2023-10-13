@@ -7,6 +7,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const handleError = require('./middlewares/handleError');
 const { limiter } = require('./middlewares/rateLimit');
 const { MONGODB_LINK } = require('./utils/config');
+const cors = require('cors');
 
 const { PORT = 3000, MONGODB_URL = MONGODB_LINK } = process.env;
 
@@ -18,6 +19,21 @@ const app = express();
 
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://localhost:3001',
+      'https://localhost:3001',
+      'http://api.diplomcohort-66.nomoredomainsrocks.ru',
+      'https://api.diplomcohort-66.nomoredomainsrocks.ru',
+      'http://diplomcohort-66.nomoredomainsrocks.ru',
+      'https://diplomcohort-66.nomoredomainsrocks.ru',
+    ],
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 app.use(requestLogger);
